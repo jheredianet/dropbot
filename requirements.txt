@@ -3,3 +3,4 @@ yt-dlp==2026.2.4
 rarfile==4.2
 curl-cffi==0.14.0
 requests==2.32.5
+bgutil-ytdlp-pot-provider

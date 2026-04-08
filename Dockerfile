@@ -45,6 +45,8 @@ RUN apt-get update && \
     mv /app/yt-dlp.conf /etc/yt-dlp.conf && \
     # Instalar dependencias de Python antes de limpiar pip
     pip3 install --no-cache-dir -r /app/requirements.txt && \
+    # Instalar plugin PO Token para YouTube (evita errores de cookies caducadas)
+    pip3 install --no-cache-dir bgutil-ytdlp-pot-provider && \
     # Limpiar archivos temporales y cache (mantener wget y ca-certificates para descargas HTTPS)
     rm -rf /tmp/* /root/.deno && \
     apt-get remove -y python3-pip curl unzip && \
