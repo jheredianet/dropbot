@@ -47,6 +47,8 @@ RUN apt-get update && \
     pip3 install --no-cache-dir -r /app/requirements.txt && \
     # Instalar plugin PO Token para YouTube (evita errores de cookies caducadas)
     pip3 install --no-cache-dir bgutil-ytdlp-pot-provider && \
+    # Actualizar yt-dlp a la última versión
+    python3 -m pip install -U yt-dlp && \
     # Limpiar archivos temporales y cache (mantener wget y ca-certificates para descargas HTTPS)
     rm -rf /tmp/* /root/.deno && \
     apt-get remove -y python3-pip curl unzip && \
@@ -54,7 +56,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN python3 -m pip install -U yt-dlp
 # Healthcheck (verificar que el proceso Python esté corriendo)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD pgrep -f "python3 dropbot.py" || exit 1
