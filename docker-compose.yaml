@@ -12,10 +12,9 @@ services:
           - ./downloads:/downloads
         depends_on:
           - bgutil-provider
-
     bgutil-provider:
         image: brainicism/bgutil-ytdlp-pot-provider:latest
         container_name: bgutil-provider
-        ports:
-          - "4416:4416"
+        expose:
+          - "4416"
         restart: unless-stopped

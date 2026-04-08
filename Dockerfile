@@ -54,6 +54,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
+RUN python3 -m pip install -U yt-dlp
 # Healthcheck (verificar que el proceso Python esté corriendo)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD pgrep -f "python3 dropbot.py" || exit 1
