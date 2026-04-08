@@ -12,6 +12,7 @@ services:
           - ./downloads:/downloads
         depends_on:
           - bgutil-provider
+
     bgutil-provider:
         image: brainicism/bgutil-ytdlp-pot-provider:latest
         container_name: bgutil-provider
