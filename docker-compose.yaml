@@ -5,7 +5,7 @@ services:
           - .env
         build:
           context: .
-          dockerfile: ./Dockerfile_local
+          dockerfile: ./Dockerfile
         tty: true
         restart: unless-stopped
         volumes:
