@@ -17,7 +17,7 @@ WORKDIR /app
 # Esto permite que yt-dlp descargue automáticamente los scripts EJS necesarios para YouTube
 COPY yt-dlp.conf /etc/yt-dlp.conf
 
-# Instalar dependencias del sistema
+# Instalar dependencias del sistema (incluyendo dependencias para Playwright/Chromium)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 \
@@ -27,7 +27,27 @@ RUN apt-get update && \
         unrar \
         wget \
         curl \
-        unzip && \
+        unzip \
+        # Dependencias para Playwright/Chromium headless
+        libnss3 \
+        libnspr4 \
+        libatk1.0-0 \
+        libatk-bridge2.0-0 \
+        libcups2 \
+        libdrm2 \
+        libdbus-1-3 \
+        libxkbcommon0 \
+        libatspi2.0-0 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxfixes3 \
+        libxrandr2 \
+        libgbm1 \
+        libasound2 \
+        libpango-1.0-0 \
+        libcairo2 \
+        libxshmfence1 \
+        fonts-liberation && \
     # Instalar Deno (requerido por yt-dlp para descargas de YouTube)
     # Deno es el runtime de JavaScript recomendado para resolver desafíos JS de YouTube
     curl -fsSL https://deno.land/install.sh | sh && \
@@ -47,7 +67,17 @@ COPY . .
 
 # Instalar dependencias de Python
 RUN pip3 install --no-cache-dir -r /app/requirements.txt && \
-    pip3 install --no-cache-dir bgutil-ytdlp-pot-provider
+    pip3 install --no-cache-dir bgutil-ytdlp-pot-provider && \
+    # Instalar Playwright y Chromium para generación de cookies
+    pip3 install --no-cache-dir playwright && \
+    playwright install chromium
+
+# Crear directorio para cookies
+RUN mkdir -p /app /tmp/cookies_cache
+
+# Copiar entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 VOLUME /downloads
 
@@ -55,4 +85,4 @@ VOLUME /downloads
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD pgrep -f "python3 dropbot.py" || exit 1
 
-ENTRYPOINT ["python3", "dropbot.py"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
