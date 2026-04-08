@@ -9,13 +9,13 @@ services:
         tty: true
         restart: unless-stopped
         volumes:
-          - ./downloads:/downloads
+          - /mnt/SmartMedia/Plex/Misc:/downloads
+        network_mode: host
         depends_on:
           - bgutil-provider
 
     bgutil-provider:
-        image: brainicism/bgutil-ytdlp-pot-provider:latest
+        image: brainicism/bgutil-ytdlp-pot-provider
         container_name: bgutil-provider
-        expose:
-          - "4416"
+        network_mode: host
         restart: unless-stopped
