@@ -15,7 +15,16 @@ services:
           - bgutil-provider
 
     bgutil-provider:
-        image: brainicism/bgutil-ytdlp-pot-provider
+        image: brainicism/bgutil-ytdlp-pot-provider:deno
         container_name: bgutil-provider
         network_mode: host
         restart: unless-stopped
+        environment:
+            # Usar certificados del sistema para conexiones HTTPS
+            - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+            # Para Deno
+            - DENO_CERT_LOAD=/etc/ssl/certs
+        volumes:
+            # Montar certificados SSL del host
+            - /etc/ssl/certs:/etc/ssl/certs:ro
+            - /etc/ca-certificates:/etc/ca-certificates:ro
