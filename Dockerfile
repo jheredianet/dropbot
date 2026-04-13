@@ -31,7 +31,7 @@ RUN apt-get update && \
     # Verificar instalación de Deno
     deno --version && \
     # Clonar repositorio directamente desde GitHub
-    git clone --depth 1 https://github.com/jheredianet/dropbot.git /tmp/dropbot && \
+    git clone --depth 1 -b develop https://github.com/jheredianet/dropbot.git /tmp/dropbot && \
     mv /tmp/dropbot/* /app/ && \
     # Mover archivo de configuración de yt-dlp para habilitar EJS
     # Esto permite que yt-dlp descargue automáticamente los scripts EJS necesarios para YouTube
