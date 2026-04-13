@@ -1713,7 +1713,7 @@ async def handle_url_link(event):
         timestamp = int(time.time() * 1000)  # Timestamp en milisegundos
         # Template: Título + Fecha de publicación (sin NA- si no es playlist)
         # Formato: "Título_2024-01-15_temp123456.mp4" o "01-Título_2024-01-15_temp123456.mp4" (playlist)
-        temp_template = f"%(playlist_index&{}-|)s%(title).150s_%(upload_date>%Y-%m-%d)s_temp{timestamp}.%(ext)s"
+        temp_template = f"%(playlist_index&{{}}-|)s%(title).150s_%(upload_date>%Y-%m-%d)s_temp{timestamp}.%(ext)s"
 
         cmd = [
             "yt-dlp",
@@ -2085,8 +2085,9 @@ async def handle_playlist_format_selection(event):
 
     # Usar timestamp para evitar sobrescribir archivos durante la descarga
     timestamp = int(time.time() * 1000)
-    # Incluir índice de playlist en el template para evitar sobrescrituras
-    temp_template = f"%(playlist_index)s-%(title).200s_temp{timestamp}.%(ext)s"
+    # Template: Título + Fecha de publicación (sin índice si no es playlist)
+    # Formato: "Título_2024-01-15_temp123456.mp4" o "01-Título_2024-01-15_temp123456.mp4" (playlist)
+    temp_template = f"%(playlist_index&{{}}-|)s%(title).150s_%(upload_date>%Y-%m-%d)s_temp{timestamp}.%(ext)s"
 
     cmd = [
         "yt-dlp",
@@ -2162,8 +2163,9 @@ async def handle_format_selection(event):
 
     # Usar timestamp para evitar sobrescribir archivos durante la descarga
     timestamp = int(time.time() * 1000)  # Timestamp en milisegundos
-    # Incluir índice de playlist en el template para evitar sobrescrituras
-    temp_template = f"%(playlist_index)s-%(title).200s_temp{timestamp}.%(ext)s"
+    # Template: Título + Fecha de publicación (sin índice si no es playlist)
+    # Formato: "Título_2024-01-15_temp123456.mp4" o "01-Título_2024-01-15_temp123456.mp4" (playlist)
+    temp_template = f"%(playlist_index&{{}}-|)s%(title).150s_%(upload_date>%Y-%m-%d)s_temp{timestamp}.%(ext)s"
 
     cmd = [
         "yt-dlp",

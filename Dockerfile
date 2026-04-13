@@ -1,13 +1,9 @@
 # Dockerfile optimizado para producción
 FROM ubuntu:22.04
 
-# Build argument
-ARG VERSION=3.1.6a
-
 # Metadata
 LABEL maintainer="dgongut"
 LABEL description="DropBot - Telegram file management bot"
-LABEL version="${VERSION}"
 
 # Evitar prompts interactivos durante la instalación
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -20,15 +16,13 @@ WORKDIR /app
 # Instalar dependencias del sistema, descargar código e instalar dependencias Python en una sola capa
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        wget \
+        git \
         ca-certificates \
         python3 \
         python3-pip \
         tzdata \
         ffmpeg \
-        unrar \
-        curl \
-        unzip && \
+        unrar && \
     # Instalar Deno (requerido por yt-dlp para descargas de YouTube)
     # Deno es el runtime de JavaScript recomendado para resolver desafíos JS de YouTube
     curl -fsSL https://deno.land/install.sh | sh && \
@@ -36,10 +30,9 @@ RUN apt-get update && \
     chmod +x /usr/local/bin/deno && \
     # Verificar instalación de Deno
     deno --version && \
-    # Descargar y extraer código
-    wget -q https://github.com/dgongut/dropbot/archive/refs/tags/v${VERSION}.tar.gz -O /tmp/dropbot.tar.gz && \
-    tar -xzf /tmp/dropbot.tar.gz -C /tmp && \
-    mv /tmp/dropbot-${VERSION}/* /app/ && \
+    # Clonar repositorio directamente desde GitHub
+    git clone --depth 1 https://github.com/jheredianet/dropbot.git /tmp/dropbot && \
+    mv /tmp/dropbot/* /app/ && \
     # Mover archivo de configuración de yt-dlp para habilitar EJS
     # Esto permite que yt-dlp descargue automáticamente los scripts EJS necesarios para YouTube
     mv /app/yt-dlp.conf /etc/yt-dlp.conf && \
@@ -49,9 +42,9 @@ RUN apt-get update && \
     pip3 install --no-cache-dir bgutil-ytdlp-pot-provider && \
     # Actualizar yt-dlp a la última versión
     python3 -m pip install -U yt-dlp && \
-    # Limpiar archivos temporales y cache (mantener wget y ca-certificates para descargas HTTPS)
+    # Limpiar archivos temporales y cache (mantener ca-certificates para descargas HTTPS)
     rm -rf /tmp/* /root/.deno && \
-    apt-get remove -y python3-pip curl unzip && \
+    apt-get remove -y python3-pip git && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
